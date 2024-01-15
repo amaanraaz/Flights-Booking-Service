@@ -19,7 +19,9 @@ async function createBooking(data){
                 ...data,
                 totalCost: totalBookingAmount
             };
+            console.log("hello", bookingPayload);
             const booking = await bookingRepository.createBooking(bookingPayload,transaction);
+            // console.log(booking);
 
             await transaction.commit();
             return true;

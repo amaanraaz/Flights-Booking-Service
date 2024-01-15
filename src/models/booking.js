@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       values: [BOOKED,CANCELLED,INITIATED,PENDING],
       defaultValue: INITIATED
     },
-    npOfSeats: {
+    noOfSeats: {
       type:DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 1
