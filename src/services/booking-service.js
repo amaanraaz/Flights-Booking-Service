@@ -22,6 +22,9 @@ async function createBooking(data){
             console.log("hello", bookingPayload);
             const booking = await bookingRepository.createBooking(bookingPayload,transaction);
             // console.log(booking);
+            await axios.patch(`${FLIGHT_SERVICE}/api/v1/flights/${data.flightId}/seats`,{
+                seats: data.noOfSeats
+            })
 
             await transaction.commit();
             return true;
