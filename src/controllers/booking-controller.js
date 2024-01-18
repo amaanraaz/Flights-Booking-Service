@@ -2,6 +2,9 @@ const {StatusCodes} = require('http-status-codes')
 const {BookingService} = require('../services');
 const { SuccessResponse, ErrorResponse } = require('../utils/common');
 
+// creating a space in memory for just storing idempotency keys or one can use a new table in db
+const inMemDb = {};
+
 async function createBooking(req,res){
     try {
         const response = await BookingService.createBooking({
@@ -23,11 +26,23 @@ async function createBooking(req,res){
 
 async function makePayment(req,res){
     try {
+        const idempotencyKey = req.headers['idempotency-key'];
+        if(!idempotencyKey){
+            return res
+                .status(StatusCodes.BAD_REQUEST)
+                .json({message:'idempotency key needed'});
+        }
+        if(inMemDb[idempotencyKey]){
+            return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({message:'Payment already done'});
+        }
         const response = await BookingService.makePayment({
             totalCost: req.body.totalCost,
             userId: req.body.userId,
             bookingId: req.body.bookingId
-    })
+    });
+    inMemDb[idempotencyKey] = idempotencyKey;
     SuccessResponse.data = response;
         return res
                 .status(StatusCodes.OK)
