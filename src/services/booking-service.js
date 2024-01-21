@@ -82,7 +82,6 @@ async function cancelBooking(bookingId){
 }
 
 async function cancelOldBooking(){
-    console.log("HELLO");
     try {
         const timeStamp = new Date( Date.now() - 1000 * 300 );
         const response = await bookingRepository.cancelOldBookings(timeStamp);
